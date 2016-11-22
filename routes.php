@@ -2,7 +2,10 @@
 
 namespace App\Controllers;
   
-  $page = ! isset($_GET['page']) ? "home" : $_GET['page'];
+
+  //If there is "page " in the  address bar then $page =that page,
+//otherwise $page o= home
+  $page =  isset($_GET['page']) ?   $_GET['page'] : "home";
 
   switch ($page) {
     
@@ -46,6 +49,12 @@ namespace App\Controllers;
      
      $controller = new MerchandiseController();
      $controller->showAll();
+     break;
+
+
+     case 'register':
+
+   echo "register page";
      break;
 
     default:
