@@ -59,8 +59,8 @@ namespace App\Controllers;
      break;
 
       case 'register.store':
-        echo '<pre>';
-        print_r($_POST);
+      $controller = new RegisterController();
+      $controller->store(); 
      break;
 
     default:
