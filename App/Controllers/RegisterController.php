@@ -1,6 +1,11 @@
 <?php
 namespace App\Controllers;
+
+
 use App\Views\RegisterView;
+use App\Models\UsersModel;
+
+
 Class RegisterController
 {
 	public function show(){
@@ -14,14 +19,31 @@ Class RegisterController
 		// Each field has been filled out
 		// Email pattern
 		$emailPattern = '/^[a-zA-Z0-9_\-.]{1,100}@[a-zA-Z0-9_\-.]{1,100}\.[a-zA-Z.]{1,100}$/';
+
+
 		if( preg_match($emailPattern, $_POST['email']) ) {
 			// Check database
-			die('Email good, check database');
+
+
+			//Look the email in database
+			$user = new UsersModel();
+
+			$result = $user -> doesThisEmailExist($_POST['email']);
+
+			//If the result is true
+			if ($result == true){
+				//Oops, this email is in use
+				$errors['email']= ' Email in use';
+			}
+		
+
 		} else {
 			// Generate error message
 			$errors['email'] = 'Please enter a valid E-Mail address';
 			
 		}
+
+
 		// Passwords match and are at least 8 characters long
 		if( strlen($_POST['password']) == 0 ) {
 			// Password has not been provided
@@ -39,7 +61,15 @@ Class RegisterController
       		return;
 		}
 		// If everything is good to go:
+
+		
+		
+
 		// Hash the password (don't save it plain text)
+		$_POST['password']= password_hash($_POST['password'],PASSWORD_BCRYPT);
+
+		$newUser = new UsersModel();
+		$newUser->saveNewUser();
 		// Insert new user into database
 		// Log them in automatically (because we're nice)
 		// Redirect to account page

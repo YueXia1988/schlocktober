@@ -4,6 +4,8 @@ namespace App\Controllers;
 use App\Views\MoviesView;
 use App\Models\MoviesModel;
 use App\Views\FeaturedMovieView;
+use App\Views\MovieCreateView;
+use App\Models\CommentsModel;
 
 Class MoviesController
 {
@@ -18,10 +20,65 @@ Class MoviesController
 
 	public function showFeaturedMovie(){
 		
-		$movie = new MoviesModel();
-		$featuredmovie = $movie->find();
+		$featuredmovie = new MoviesModel($_GET['id']);
+		
+		$comments = new CommentsModel();
+		$allcomments = $comments->getAllComments($_GET['id']);
 
-		$view = new FeaturedMovieView(compact('featuredmovie'));
+		$view = new FeaturedMovieView(compact('featuredmovie','allcomments'));
 		$view->render();
+	}
+	public function create(){
+		$movie= new MoviesModel();
+		$view = new MovieCreateView(compact('movie'));
+		$view->render();
+	}
+
+	public function storeComments(){
+		$input=$_POST;
+		$input['user_id'] = $_SESSION['user_id'];
+
+		$comment = new CommentsModel($input);
+		$comment->save();
+		header("Location:./?page=featuredmovie&id=".$comment->movie_id);
+	}
+
+	public function edit(){
+
+		$movie = new MoviesModel($_GET['id']);
+
+		$view = new MovieCreateView(compact('movie'));
+		$view->render();
+		
+	}
+
+	public function update(){
+		$movie = new MoviesModel($_POST);
+		$movie->update();
+		header("Location:./?page=featuredmovie&id=".$movie->id);
+		exit();
+	}
+
+
+	public function delete(){
+		
+		$movieID = isset($_GET['id']) ? $_GET['id'] : null;
+		MoviesModel::destroy($movieID);
+		header('Location:./?page=movies');
+	}
+
+
+	public function store(){
+		
+		
+		$movie = new MoviesModel($_POST);
+		if($_FILES['poster']){
+			$movie->savePoster($_FILES['poster']['tmp_name']);
+		}
+
+		
+		$movie->save();
+		header("Location:./?page=featuredmovie&id=". $movie->id);
+		
 	}
 }

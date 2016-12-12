@@ -39,6 +39,45 @@ namespace App\Controllers;
       $controller->show();      
       break;
 
+    case 'movie.create':
+
+      $controller = new MoviesController();
+      $controller->create();
+      break;
+
+
+    case 'movie.edit':
+
+      $controller = new MoviesController();
+      $controller->edit();
+      break;
+
+
+    case 'movie.delete':
+
+      $controller = new MoviesController();
+      $controller->delete();
+      break;
+
+     case 'movie.store':
+
+      $controller = new MoviesController();
+      $controller->store();
+      break;
+
+      case 'comment.create':
+
+      $controller = new MoviesController();
+      $controller->storeComments();
+      break;
+
+    case 'movie.update':
+
+      $controller = new MoviesController();
+      $controller->update();
+      header("Location:./?page=featuredmovie&id=".$movie->id);
+      break;
+
     case 'moviesuggestsuccess':
      
      $controller = new MovieSuggestController();
@@ -62,6 +101,32 @@ namespace App\Controllers;
       $controller = new RegisterController();
       $controller->store(); 
      break;
+
+      case 'account':
+        if(isset($_SESSION['user_id'])) {
+          $controller = new AccountController();
+          $controller->show();
+        }else{
+          header('Location: index.php?page=login');
+        }
+     break;
+
+      case 'logout':
+        unset($_SESSION['user_id']);
+        unset($_SESSION['privilege']);
+        header('Location: index.php');
+     break;
+
+      case 'login':
+        $controller = new AccountController();
+        $controller->showLoginForm();
+     break;
+
+       case 'login.try':
+        $controller = new AccountController();
+        $controller->processLoginForm();
+     break;
+
 
     default:
       echo "Error 404 ! Page not found !";
